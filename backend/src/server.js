@@ -10,9 +10,7 @@ const app = express();
 const PORT = ENV.PORT;
 
 // Start the cron job
-if (ENV.NODE_ENV === 'production') {
-	job.start();
-}
+job.start();
 
 app.use(express.json());
 app.use(cors());

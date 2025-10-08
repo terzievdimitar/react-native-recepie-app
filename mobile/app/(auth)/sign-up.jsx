@@ -1,64 +1,71 @@
-import { View, Text, Alert, KeyboardAvoidingView, Platform, ScrollView, TextInput, TouchableOpacity } from 'react-native';
-import { Image } from 'expo-image';
+import { View, Text, Alert, Platform, KeyboardAvoidingView, ScrollView, TextInput, TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
+import { useSignUp } from '@clerk/clerk-expo';
 import { useState } from 'react';
-import { useSignIn } from '@clerk/clerk-expo';
 import { authStyles } from '../../assets/styles/auth.styles';
 import { COLORS } from '../../constants/colors';
+import { Image } from 'expo-image';
 import { Ionicons } from '@expo/vector-icons';
+import VerifyEmail from './verify-email';
 
-const SignInScreen = () => {
+const SignUpScreen = () => {
 	const router = useRouter();
-	const { signIn, setActive, isLoaded } = useSignIn();
-
+	const { signUp, isLoaded } = useSignUp();
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
 	const [showPassword, setShowPassword] = useState(false);
 	const [loading, setLoading] = useState(false);
+	const [pendingVerification, setPendingVerification] = useState(false);
 
-	const handleSignIn = async () => {
+	const handleSignUp = async () => {
 		if (!email || !password) {
-			Alert.alert('Error', 'Email and password are required');
-			return;
+			return Alert.alert('Error', 'Email and password are required.');
 		}
-
+		if (password.length < 6) {
+			return Alert.alert('Error', 'Password must be at least 6 characters long.');
+		}
 		if (!isLoaded) return;
 
 		setLoading(true);
-
 		try {
-			const signInAttempt = await signIn({ identifier: email, password });
-			if (signInAttempt.status === 'complete') {
-				await setActive({ session: signInAttempt.createdSessionId });
-			} else {
-				Alert.alert('Error', 'Sign in failed. Please try again.');
-				console.error(JSON.stringify(signInAttempt, null, 2));
-			}
-		} catch (err) {
-			Alert.alert('Error', err.errors?.[0]?.message || 'Sign in failed');
-			console.error(JSON.stringify(err, null, 2));
+			await signUp.create({ emailAddress: email, password });
+
+			await signUp.prepareEmailAddressVerification({ strategy: 'email_code' });
+			setPendingVerification(true);
+		} catch (error) {
+			Alert.alert('Error', 'Failed to sign up. Please try again.');
+			console.error(JSON.stringify(error, null, 2));
 		} finally {
 			setLoading(false);
 		}
 	};
 
+	if (pendingVerification) {
+		return (
+			<VerifyEmail
+				email={email}
+				onBack={() => setPendingVerification(false)}
+			/>
+		);
+	}
+
 	return (
 		<View style={authStyles.container}>
 			<KeyboardAvoidingView
-				style={authStyles.keyboardView}
 				behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-				keyboardVerticalOffset={Platform.OS === 'ios' ? 64 : 32}>
+				style={authStyles.keyboardView}
+				KeyboardAvoidingView={Platform.OS === 'ios' ? 64 : 32}>
 				<ScrollView
 					contentContainerStyle={authStyles.scrollContent}
-					showsVerticalScrollIndicator={false}>
+					showVerticalScrollIndicator={false}>
 					<View style={authStyles.imageContainer}>
 						<Image
-							source={require('../../assets/images/i1.png')}
+							source={require('../../assets/images/i2.png')}
 							style={authStyles.image}
 							contentFit='contain'
 						/>
 					</View>
-					<Text style={authStyles.title}>Welcome Back</Text>
+					<Text style={authStyles.title}>Create an account</Text>
 
 					{/* Form Container */}
 					<View style={authStyles.formContainer}>
@@ -68,22 +75,22 @@ const SignInScreen = () => {
 								style={authStyles.textInput}
 								placeholder='Email'
 								placeholderTextColor={COLORS.textLight}
+								keyboardType='email-address'
+								autoCapitalize='none'
 								value={email}
 								onChangeText={setEmail}
-								keyboardType='email-address'
-								autocapitalize='none'
 							/>
 						</View>
+
 						{/* Password Input */}
 						<View style={authStyles.inputContainer}>
 							<TextInput
 								style={authStyles.textInput}
 								placeholder='Password'
 								placeholderTextColor={COLORS.textLight}
+								secureTextEntry={!showPassword}
 								value={password}
 								onChangeText={setPassword}
-								secureTextEntry={!showPassword}
-								autocapitalize='none'
 							/>
 							<TouchableOpacity
 								style={authStyles.eyeButton}
@@ -95,21 +102,21 @@ const SignInScreen = () => {
 								/>
 							</TouchableOpacity>
 						</View>
-						{/* Sign In Button */}
+						{/* Sign Up Button */}
 						<TouchableOpacity
-							style={[authStyles.authButton, loading && authStyles.buttonDisabled]}
-							onPress={handleSignIn}
+							style={authStyles.authButton}
+							onPress={handleSignUp}
 							disabled={loading}
 							activeOpacity={0.8}>
-							<Text style={authStyles.buttonText}>{loading ? 'Signing In...' : 'Sign In'}</Text>
+							<Text style={authStyles.buttonText}>{loading ? 'Signing Up...' : 'Sign Up'}</Text>
 						</TouchableOpacity>
 
-						{/* Sign Up Redirect */}
+						{/* Navigate to Sign In */}
 						<TouchableOpacity
 							style={authStyles.linkContainer}
-							onPress={() => router.push('/(auth)/sign-up')}>
+							onPress={() => router.push('/(auth)/sign-in')}>
 							<Text style={authStyles.linkText}>
-								Don&apos;t have an account? <Text style={authStyles.link}>Sign Up</Text>
+								Already have an account? <Text style={authStyles.link}>Sign In</Text>
 							</Text>
 						</TouchableOpacity>
 					</View>
@@ -119,4 +126,4 @@ const SignInScreen = () => {
 	);
 };
 
-export default SignInScreen;
+export default SignUpScreen;
