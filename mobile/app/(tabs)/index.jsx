@@ -1,12 +1,24 @@
-import { View, Text } from 'react-native';
-import React from 'react';
+import { Text, View } from 'react-native';
+import { StyleSheet } from 'react-native';
+import { Link } from 'expo-router';
 
-const HomeScreen = () => {
+export default function Index() {
 	return (
-		<View>
-			<Text>HomeScreen</Text>
+		<View style={styles.container}>
+			<Text style={styles.text}>Edit app/index.tsx to edit this screen.</Text>
+			<Link href='/(auth)/sign-in'>Go to Sign In</Link>
 		</View>
 	);
-};
+}
 
-export default HomeScreen;
+const styles = StyleSheet.create({
+	text: {
+		color: 'red',
+		fontSize: 16,
+	},
+	container: {
+		flex: 1,
+		justifyContent: 'center',
+		alignItems: 'center',
+	},
+});
