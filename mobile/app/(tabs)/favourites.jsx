@@ -12,26 +12,27 @@ import LoadingSpinner from '../../components/LoadingSpinner';
 const FavouritesScreen = () => {
 	const { signOut } = useClerk();
 	const { user } = useUser();
-	const [favorites, setFavorites] = useState([]);
+	const [favoriteRecipes, setFavoriteRecipes] = useState([]);
 	const [loading, setLoading] = useState(true);
 
 	useEffect(() => {
 		const loadFavorites = async () => {
 			try {
-				const response = await fetch(`${API_URL}/favorites/${user?.id}`);
-				if (!response.ok) {
-					throw new Error('Failed to fetch favorites');
-				}
+				const response = await fetch(`${API_URL}/favorites/${user.id}`);
+				if (!response.ok) throw new Error('Failed to fetch favorites');
+
 				const favorites = await response.json();
 
-				// Transform the data to match the expected structure
+				// transform the data to match the RecipeCard component's expected format
 				const transformedFavorites = favorites.map((favorite) => ({
 					...favorite,
 					id: favorite.recipeId,
 				}));
-				setFavorites(transformedFavorites);
+
+				setFavoriteRecipes(transformedFavorites);
 			} catch (error) {
-				console.error('Error fetching favorites:', error);
+				console.log('Error loading favorites', error);
+				Alert.alert('Error', 'Failed to load favorites');
 			} finally {
 				setLoading(false);
 			}
@@ -76,13 +77,13 @@ const FavouritesScreen = () => {
 
 				<View style={favoritesStyles.recipesSection}>
 					<FlatList
-						data={favorites}
-						renderItem={({ item }) => <RecipeCard item={item} />}
+						data={favoriteRecipes}
+						renderItem={({ item }) => <RecipeCard recipe={item} />}
 						keyExtractor={(item) => item.id.toString()}
+						numColumns={2}
 						columnWrapperStyle={favoritesStyles.row}
 						contentContainerStyle={favoritesStyles.recipesGrid}
 						scrollEnabled={false}
-						numColumns={2}
 						ListEmptyComponent={<NoFavoritesFound />}
 					/>
 				</View>

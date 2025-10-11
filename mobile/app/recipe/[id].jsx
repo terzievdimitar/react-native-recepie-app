@@ -69,30 +69,39 @@ const RecipeDetailScreen = () => {
 
 	const handleToggleSave = async () => {
 		setIsSaving(true);
+
 		try {
 			if (isSaved) {
-				// Remove from favorites
-				const response = await fetch(`${API_URL}/favorites/${userId}/${recipeId}`, { method: 'DELETE' });
-				if (!response.ok) {
-					throw new Error('Failed to remove favorite');
-				}
+				// remove from favorites
+				const response = await fetch(`${API_URL}/favorites/${userId}/${recipeId}`, {
+					method: 'DELETE',
+				});
+				if (!response.ok) throw new Error('Failed to remove recipe');
+
+				setIsSaved(false);
 			} else {
-				// Add to favorites
-				const response = await fetch(`${API_URL}/favorites/${userId}`, {
+				// add to favorites
+				const response = await fetch(`${API_URL}/favorites`, {
 					method: 'POST',
 					headers: {
 						'Content-Type': 'application/json',
 					},
-					body: JSON.stringify({ recipeId }),
+					body: JSON.stringify({
+						userId,
+						recipeId: parseInt(recipeId),
+						title: recipe.title,
+						image: recipe.image,
+						cookTime: recipe.cookTime,
+						servings: recipe.servings,
+					}),
 				});
-				if (!response.ok) {
-					throw new Error('Failed to add favorite');
-				}
+
+				if (!response.ok) throw new Error('Failed to save recipe');
 				setIsSaved(true);
 			}
 		} catch (error) {
-			console.error('Error toggling favorite:', error);
-			Alert.alert('Error', 'There was an error saving the recipe. Please try again.');
+			console.error('Error toggling recipe save:', error);
+			Alert.alert('Error', `Something went wrong. Please try again.`);
 		} finally {
 			setIsSaving(false);
 		}
@@ -137,7 +146,7 @@ const RecipeDetailScreen = () => {
 							<Ionicons
 								name={isSaving ? 'hourglass' : isSaved ? 'heart' : 'heart-outline'}
 								size={24}
-								color={isSaved ? COLORS.red : COLORS.white}
+								color={isSaved ? 'rgba(255, 46, 46, 0.8)' : COLORS.white}
 							/>
 						</TouchableOpacity>
 					</View>
