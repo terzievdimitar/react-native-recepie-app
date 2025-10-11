@@ -79,6 +79,10 @@ const HomeScreen = () => {
 		loadData();
 	}, []);
 
+	if (loading && !refreshing) {
+		return <LoadingSpinner message='Loading recipes...' />;
+	}
+
 	return (
 		<View style={homeStyles.container}>
 			<ScrollView

@@ -19,7 +19,7 @@ app.get('/api/health', (req, res) => {
 	res.status(200).send({ success: true });
 });
 
-app.post('/api/favourites', async (req, res) => {
+app.post('/api/favorites', async (req, res) => {
 	try {
 		const { userId, recipeId, title, image, cookTime, servings } = req.body;
 		if (!userId || !recipeId || !title) {
@@ -34,7 +34,7 @@ app.post('/api/favourites', async (req, res) => {
 	}
 });
 
-app.get('/api/favourites/:userId', async (req, res) => {
+app.get('/api/favorites/:userId', async (req, res) => {
 	try {
 		const { userId } = req.params;
 		const favorites = await db.select().from(favoritesTable).where(eq(favoritesTable.userId, userId));
@@ -45,7 +45,7 @@ app.get('/api/favourites/:userId', async (req, res) => {
 	}
 });
 
-app.delete('/api/favourites/:userId/:recipeId', async (req, res) => {
+app.delete('/api/favorites/:userId/:recipeId', async (req, res) => {
 	try {
 		const { userId, recipeId } = req.params;
 
