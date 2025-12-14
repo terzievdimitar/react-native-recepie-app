@@ -103,13 +103,9 @@ To run the app locally:
       ```env
       PORT=5001
 
-      # Database URL
       DB_URL=
 
       API_URL=
-
-      # Clerk API Keys
-      EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY=
 
       NODE_ENV=
       ```
@@ -117,7 +113,8 @@ To run the app locally:
       Create a `.env` file in `/frontend` and add your database and secret keys as follows:
 
       ```env
-      EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_dmlhYmxlLXRvcnRvaXNlLTYuY2xlcmsuYWNjb3VudHMuZGV2JA
+      # Clerk API Keys
+      EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY=
       ```
 
 4. **Run the development servers:**
@@ -137,7 +134,7 @@ To run the app locally:
 - **Development mode:** `npx expo start` (from the `mobile` directory)
 - **Production mode:** `npx expo start --no-dev --minify`
 
-> Use the Expo QR code to open the app on your device, or run it in an emulator.
+> Use the Expo QR code to open the app on your device with Expo GO, or run it in an emulator.
 
 ### 📃 API Overview
 
@@ -145,11 +142,11 @@ The backend provides RESTful endpoints for authentication, recipes, and favorite
 
 #### **Authentication**
 
-- Auth is done using Clerk. For more information visit [https://clerk.com/docs/expo/getting-started/quickstart](https://clerk.com/docs/expo/getting-started/quickstart)
+- Auth is done using `Clerk`. For more information visit [https://clerk.com/docs/expo/getting-started/quickstart](https://clerk.com/docs/expo/getting-started/quickstart)
 
 #### **Recipes**
 
-- To manage the recipe TheMealDB API has been used. For more information visit [https://www.themealdb.com/api.php](https://www.themealdb.com/api.php)
+- To manage the recipes `TheMealDB API` has been used. For more information visit [https://www.themealdb.com/api.php](https://www.themealdb.com/api.php)
 
 #### **Favorites**
 
