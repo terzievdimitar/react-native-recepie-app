@@ -1,7 +1,7 @@
 <div align="center">
 
 <a href="https://github.com/terzievdimitar/react-native-recepie-app" target="blank">
-   <img src="../overview/app-icon.png" width="90" alt="Recipe App Logo" />
+   <img src="./overview/app-icon.png" width="90" alt="Recipe App Logo" />
 </a>
 
 <h2>Recipe App – React Native (Expo)</h2>
@@ -15,7 +15,7 @@
 ![](https://img.shields.io/badge/Clerk-3A3A3A?style=for-the-badge&logo=clerk&logoColor=white)
 
 <img
-   src="../overview/preview.png"
+   src="./overview/preview.png"
    width="80%"
    alt="Recipe App Preview"
 />
